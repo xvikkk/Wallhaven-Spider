@@ -60,7 +60,7 @@ class WallpapersSpider(scrapy.Spider):
 
         # 装载数据
         item['wall_id'] = wall_id
-        item['image_urls'] = [full_image_url] # 必须是列表
+        item['image_urls'] = [full_image_url]
         item['resolution'] = resolution
         item['tags'] = tags
 
