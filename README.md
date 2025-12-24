@@ -7,8 +7,11 @@ wallhaven_pro是一个基于Scrapy框架开发的壁纸下载爬虫，主要用�
 >Wallhaven是全球最大的壁纸分享平台，提供了海量的高清壁纸。wallhaven_pro爬虫可以帮助用户批量下载Wallhaven上的壁纸，方便用户收藏和使用。
 
 ## 环境和运行
+```text
 python版本：3.12.6
 scrapy版本：2.13.4
+pillow版本：12.0.0
+```
 1. 安装Scrapy框架和pillow：
    ```
    pip install scrapy pillow
