@@ -1,4 +1,4 @@
-# Scrapy settings for wallhaven_pro project
+# Scrapy settings for wallpaper_pro project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -8,16 +8,16 @@
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
 
-BOT_NAME = "wallhaven_pro"
+BOT_NAME = "wallpaper_pro"
 
-SPIDER_MODULES = ["wallhaven_pro.spiders"]
-NEWSPIDER_MODULE = "wallhaven_pro.spiders"
+SPIDER_MODULES = ["wallpaper_pro.spiders"]
+NEWSPIDER_MODULE = "wallpaper_pro.spiders"
 
 ADDONS = {}
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "wallhaven_pro (+http://www.yourdomain.com)"
+#USER_AGENT = "wallpaper_pro (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -35,21 +35,21 @@ RANDOMIZE_DOWNLOAD_DELAY = True
 #TELNETCONSOLE_ENABLED = False
 
 # Override the default request headers:
-DEFAULT_REQUEST_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-    "Referer": "https://wallhaven.cc/",
-}
+# DEFAULT_REQUEST_HEADERS = {
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+#     "Referer": "https://wallhaven.cc/",
+# }
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "wallhaven_pro.middlewares.WallhavenProSpiderMiddleware": 543,
+#    "wallpaper_pro.middlewares.wallpaperProSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "wallhaven_pro.middlewares.WallhavenProDownloaderMiddleware": 543,
+#    "wallpaper_pro.middlewares.wallpaperProDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -61,7 +61,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "wallhaven_pro.pipelines.WallhavenImagePipeline": 1,
+   "wallpaper_pro.pipelines.wallpaperImagePipeline": 1,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

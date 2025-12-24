@@ -9,7 +9,7 @@ import scrapy
 from scrapy.pipelines.images import ImagesPipeline
 from scrapy.exceptions import DropItem
 
-class WallhavenImagePipeline(ImagesPipeline):
+class wallpaperImagePipeline(ImagesPipeline):
     
     def get_media_requests(self, item, info):
         """发送下载请求，并将 item 传递给 meta"""
@@ -17,16 +17,20 @@ class WallhavenImagePipeline(ImagesPipeline):
             yield scrapy.Request(image_url, meta={'item': item})
 
     def file_path(self, request, response=None, info=None, *, item=None):
-        """
-        自定义保存的文件名
-        """
-        # 获取 meta 中的 item
         item = request.meta['item']
-        
         image_guid = item['wall_id']
-        suffix = request.url.split('.')[-1] # 获取后缀
         
-        filename = f"wallhaven-{image_guid}.{suffix}"
+        # 动态获取后缀
+        url = request.url
+        suffix = url.split('.')[-1]
+        # 清洗后缀，防止带参数
+        if "?" in suffix:
+            suffix = suffix.split('?')[0]
+
+        if "netbian" not in image_guid:
+             filename = f"wallhaven-{image_guid}.{suffix}"
+        else:
+             filename = f"{image_guid}.{suffix}"
         
         return filename
 

@@ -6,7 +6,7 @@
 import scrapy
 
 
-class WallhavenProItem(scrapy.Item):
+class WallpaperProItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     # 壁纸唯一ID

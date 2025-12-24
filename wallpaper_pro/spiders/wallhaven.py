@@ -1,12 +1,17 @@
 import scrapy
-from wallhaven_pro.items import WallhavenProItem
+from wallpaper_pro.items import WallpaperProItem
 
-class WallpapersSpider(scrapy.Spider):
-    name = "wallpapers"
+class WallhavenSpider(scrapy.Spider):
+    name = "wallhaven"
     allowed_domains = ["wallhaven.cc"]
+
+    custom_settings = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Referer": "https://wallhaven.cc/",
+    }
     
     def __init__(self, category='toplist', username=None, password=None, *args, **kwargs):
-        super(WallpapersSpider, self).__init__(*args, **kwargs)
+        super(WallhavenSpider, self).__init__(*args, **kwargs)
         self.category_url = f"https://wallhaven.cc/{category}"
         self.username = username
         self.password = password
@@ -67,7 +72,7 @@ class WallpapersSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         """解析详情页"""
-        item = WallhavenProItem()
+        item = WallpaperProItem()
         full_image_url = response.xpath('//img[@id="wallpaper"]/@src').get()
         wall_id = response.xpath('//img[@id="wallpaper"]/@data-wallpaper-id').get()
         width = response.xpath('//img[@id="wallpaper"]/@data-wallpaper-width').get()
