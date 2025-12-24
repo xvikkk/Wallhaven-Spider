@@ -49,7 +49,7 @@ class NetbianSpider(scrapy.Spider):
 
     def parse_detail(self, response):
         """解析详情页"""
-        item = WallhavenProItem()
+        item = WallpaperProItem()
 
         # 提取 ID
         try:
