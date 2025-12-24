@@ -4,64 +4,79 @@ from wallhaven_pro.items import WallhavenProItem
 class WallpapersSpider(scrapy.Spider):
     name = "wallpapers"
     allowed_domains = ["wallhaven.cc"]
-
-    # 重写构造函数，接收外部参数
-    def __init__(self, category='toplist', *args, **kwargs):
-        """
-        构造函数：接收外部传递的 category 参数
-        :param category: 从 start.py 传来的榜单名称
-        """
+    
+    def __init__(self, category='toplist', username=None, password=None, *args, **kwargs):
         super(WallpapersSpider, self).__init__(*args, **kwargs)
+        self.category_url = f"https://wallhaven.cc/{category}"
+        self.username = username
+        self.password = password
+
+    def start_requests(self):
+        """
+        爬虫入口：判断是否有账号密码
+        """
+        if self.username and self.password:
+            print(f"--- 准备登录用户: {self.username} ---")
+            yield scrapy.Request(
+                url="https://wallhaven.cc/login",
+                callback=self.login_step_1
+            )
+        else:
+            print("--- 未提供账号，以游客身份爬取 ---")
+            yield scrapy.Request(url=self.category_url, callback=self.parse)
+
+    def login_step_1(self, response):
+        """
+        接收登录页 HTML，自动提交表单
+        """
+        print("--- 正在提交登录表单 ---")
         
-        # 动态构建 URL
-        self.start_urls = [f"https://wallhaven.cc/{category}"]
-        
-        # 记录当前爬取的类别，方便调试
-        self.category = category
+        yield scrapy.FormRequest.from_response(
+            response,
+            formid="login",
+            formdata={
+                'username': self.username,
+                'password': self.password
+            },
+            callback=self.check_login_status
+        )
+
+    def check_login_status(self, response):
+        """
+        检查登录是否成功
+        """
+        if "logout" in response.text.lower() or "userpanel" in response.text.lower():
+            print(f"--- 登录成功！开始爬取 {self.category_url} ---")
+            
+            # 登录成功后，带着 Cookie 跳转到原本想去的榜单页面
+            yield scrapy.Request(url=self.category_url, callback=self.parse)
+        else:
+            self.logger.error("登录失败！请检查账号密码。正在尝试以游客身份继续...")
+            yield scrapy.Request(url=self.category_url, callback=self.parse)
 
     def parse(self, response):
-        """
-        第一层：解析列表页
-        """
-        # 打印当前正在解析的榜单
-        print(f"--- 正在爬取榜单: {self.category} ---")
-
-        # 提取所有壁纸的详情页链接
+        """解析列表页"""
+        print(f"--- 正在解析列表页: {response.url} ---")
         detail_links = response.xpath('//a[@class="preview"]/@href').getall()
-        
         for link in detail_links:
-            # 请求详情页，进入第二层解析
             yield scrapy.Request(url=link, callback=self.parse_detail)
 
-        # 翻页逻辑
         next_page = response.xpath('//a[@class="next"]/@href').get()
         if next_page:
             yield response.follow(next_page, callback=self.parse)
 
     def parse_detail(self, response):
-        """
-        第二层：解析详情页，提取高清原图
-        """
+        """解析详情页"""
         item = WallhavenProItem()
-
-        # 提取高清原图链接
         full_image_url = response.xpath('//img[@id="wallpaper"]/@src').get()
-        
-        # 提取壁纸 ID
         wall_id = response.xpath('//img[@id="wallpaper"]/@data-wallpaper-id').get()
-        
-        # 提取分辨率
         width = response.xpath('//img[@id="wallpaper"]/@data-wallpaper-width').get()
         height = response.xpath('//img[@id="wallpaper"]/@data-wallpaper-height').get()
         resolution = f"{width}x{height}" if width and height else "unknown"
-
-        # 提取标签 (清洗数据)
         tags = response.xpath('//ul[@id="tags"]/li/a/text()').getall()
 
-        # 装载数据
         item['wall_id'] = wall_id
-        item['image_urls'] = [full_image_url]
+        item['image_urls'] = [full_image_url] if full_image_url else []
         item['resolution'] = resolution
         item['tags'] = tags
-
         yield item
