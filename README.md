@@ -15,6 +15,9 @@ pillow版本：12.0.0
 1. 安装Scrapy框架和pillow：
    ```
    pip install scrapy pillow
+   
+   # 或者
+   pip install -r requirements.txt
    ```
 2. 运行：
    ```
